@@ -1,0 +1,61 @@
+<html>
+    <title>
+        IRE MAJOR PROJECT
+    </title>
+    <body>
+        <h1><center>Automatic Text Scoring</center></h1>
+        <hr>
+        <h2>Introduction</h2>
+        <p>
+            The Automatic Text Scoring system is a machine learning model which learns to approximate the marking process with supervised learning. In this project, we intend to implement one such system called SKIPFLOW. (<a href="https://arxiv.org/pdf/1711.04981.pdf">paper link</a>)
+        </p>
+        <p>
+            Essays are typically long sequences and therefore the memorization capability of the LSTM network may be insufficient. This paper tries to address this problem through  implicit access to multiple snapshots that can act as a protection against vanishing gradients.
+        </p>
+        <p>
+            SKIPFLOW mechanism that models relationships between snapshots of the hidden representations of a long short-term memory (LSTM) network as it reads
+        </p>
+        <h2>Architecture</h2>
+            <center><img src="architecture.png" alt=""></center>
+        <h3>Embedding Layer:</h3>
+        Each word in the essay is represented by a vector and the essay is a list of vectors. Each essay is represented as a fixed length array which is padded to the maximum length. This representation of the essay along with the target score is fed into the next layer.
+        <h3>LSTM Layer:</h3>
+        The LSTM outputs a hidden vector htthat reflects the semantic representation of the essay at position t. To select the final representation of the essay, a temporal mean pool is applied to all LSTM outputs.
+        <h3>Neural Tensor Layer:</h3>
+        A tensor layer is applied between the two LSTM layers to model the relationship between two LSTM outputs.
+        </br><center><img src="tensor.png" alt=""></center>
+        <h3>Fully Connected Hidden Layer:</h3>
+        All the scalar values that are obtained from the tensor layer are concatenated together to form the neural coherence feature vector. The essay representation that is obtained from a mean pooling over all hidden states is then concatenated with the coherence feature vector.
+        <h3>Final linear layer with Sigmoid activation function:</h3>
+        Finally, we pass the output of the hidden layer into a final regression layer. The output at this final layer is the normalized score of the essay.
+        <h3>Learning and optimisation:</h3>
+        We use the mean square error loss function. The parameters are then optimized using gradient descent.
+        <h2>Implementation:</h2>
+        <h3>Dataset:</h3>
+        We used the ASAP dataset for evaluation. This comes from the competition which was organized and sponsored by the William and Flora Hewlett Foundation (Hewlett) and ran on Kaggle from 10/2/12 to 30/4/12. This dataset contains 8 essay prompts each of which can be interpreted as a different essay topic along with a different genre such as argumentative or narrative.
+        <h3>Implementation of Models:</h3>
+        The embeddings were created using the Glove representation for words. We used the keras library to implement all the neural networks for the model.  In addition, we have used numpy and pandas libraries for data manipulation.
+        <h3>Evaluation Metric:</h3>
+        The evaluation metric used is the Quadratic Weighted Kappa (QWK) which measures agreement between raters and is a commonly used metric for ATS systems.  In the project, we have used the scikit-learn module for evaluation purposes. 
+        <br><center><img src="kappa.png" alt=""></center>
+        A jupyter notebook demonstration can be found <a href="https://github.com/SharonVarghese93/MAJORPROJ-IRE/blob/master/examples/example.ipynb">here</a>.
+        <h3>Results:</h3>
+        The QWK values for the SKIPFLOW model:
+        <br>All the results reported are on the validation set. Train-Validate split ratio is 0.7-0.3.
+        <br>We have noticed that the results are the best at coherence width 𝛅 = 50 and Tensor slices k = 6. Our best results for different essay sets are as follows:
+        <br><center><img src="results.png" alt=""></center>
+        These results are on par with the results reported in the paper.
+        <h3>Effect of Hyper Parameters:</h3>
+        Coherence width: Most optimal coherence width is found to be 50. 
+        <br><center><img src="figure1.png" alt=""></center>
+        Tensor slices: Most optimal no of tensor slices is found to be 6.
+        <br><center><img src="figure2.png" alt=""></center>
+        <h2>Conclusion:</h2>
+        <ul>
+            <li>We have successfully implemented the paper have achieved results on par with the paper.</li>
+            <li>Implemented both the tensor and the bilinear scenarios.</li>
+            <li>Also implemented the baseline Vanilla LSTM and showed that our model significantly outperforms.</li>
+            <li>Performed extensive hyper-parameter tuning to determine the optimal coherence width and tensor slices.</li>
+        </ul>
+    </body>
+</html>
